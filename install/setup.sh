@@ -14,8 +14,8 @@ else
     sleep 1
 fi
 
-CATKIN_WS=${HOME}/catkin_ws
-CATKIN_SRC=${HOME}/catkin_ws/src
+CATKIN_WS=${HOME}/catkin_ws_fastplanner_unity
+CATKIN_SRC=${CATKIN_WS}/src
 
 if [ ! -d "$CATKIN_WS" ]; then
 	echo "Creating $CATKIN_WS ... "
@@ -32,7 +32,6 @@ catkin init
 catkin config --merge-devel
 catkin config --cmake-args -DCMAKE_BUILD_TYPE=Release
 
-grep -xF 'source '${HOME}'/catkin_ws/devel/setup.bash' ${HOME}/.bashrc || echo "source $HOME/catkin_ws/devel/setup.bash" >> $HOME/.bashrc
 ####################################### Setup PX4 v1.10.1 #######################################
 if [ "$BUILD_PX4" != "false" ]; then
 
@@ -87,11 +86,6 @@ if [ "$BUILD_PX4" != "false" ]; then
         zip \
         ;
 
-    # Python3 dependencies
-    echo
-    echo "Installing PX4 Python3 dependencies"
-    pip3 install --user -r ${DIR}/px4_requirements.txt
-
     echo "arrow" | sudo -S DEBIAN_FRONTEND=noninteractive apt-get -y --quiet --no-install-recommends install \
             gstreamer1.0-plugins-bad \
             gstreamer1.0-plugins-base \
@@ -130,101 +124,28 @@ if [ "$BUILD_PX4" != "false" ]; then
     cd ${HOME}/Firmware
     DONT_RUN=1 make px4_sitl gazebo
 
-    #Copying this to  .bashrc file
-    grep -xF 'source ~/Firmware/Tools/setup_gazebo.bash ~/Firmware ~/Firmware/build/px4_sitl_default' ${HOME}/.bashrc || echo "source ~/Firmware/Tools/setup_gazebo.bash ~/Firmware ~/Firmware/build/px4_sitl_default" >> ${HOME}/.bashrc
-    grep -xF 'export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:~/Firmware' ${HOME}/.bashrc || echo "export ROS_PACKAGE_PATH=\$ROS_PACKAGE_PATH:~/Firmware" >> ${HOME}/.bashrc
-    grep -xF 'export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:~/Firmware/Tools/sitl_gazebo' ${HOME}/.bashrc || echo "export ROS_PACKAGE_PATH=\$ROS_PACKAGE_PATH:~/Firmware/Tools/sitl_gazebo" >> ${HOME}/.bashrc
-    grep -xF 'export GAZEBO_PLUGIN_PATH=$GAZEBO_PLUGIN_PATH:/usr/lib/x86_64-linux-gnu/gazebo-9/plugins' ${HOME}/.bashrc || echo "export GAZEBO_PLUGIN_PATH=\$GAZEBO_PLUGIN_PATH:/usr/lib/x86_64-linux-gnu/gazebo-9/plugins" >> ${HOME}/.bashrc
-    grep -xF 'export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:'${HOME}'/catkin_ws/src/px4_fast_planner/models' ${HOME}/.bashrc || echo "export GAZEBO_MODEL_PATH=\$GAZEBO_MODEL_PATH:${HOME}/catkin_ws/src/px4_fast_planner/models" >> ${HOME}/.bashrc
-
     # Copy PX4 SITL param file
     cp $CATKIN_SRC/px4_fast_planner/config/10017_iris_depth_camera ${HOME}/Firmware/ROMFS/px4fmu_common/init.d-posix/
 
-    source ${HOME}/.bashrc
+    # Install MAVROS
+    sudo apt install ros-melodic-mavros ros-melodic-mavros-extras -y
+
 fi
 
-
-# Install MAVROS
-sudo apt install ros-melodic-mavros ros-melodic-mavros-extras -y
-####################################### mavros_controllers setup #######################################
-echo -e "\e[1;33m Adding mavros_controllers \e[0m"
-#Adding mavros_controllers
-if [ ! -d "$CATKIN_SRC/mavros_controllers" ]; then
-    echo "Cloning the mavros_controllers repo ..."
-    cd $CATKIN_SRC
-    git clone https://github.com/Jaeyoung-Lim/mavros_controllers.git
-    cd ../
-else
-    echo "mavros_controllers already exists. Just pulling ..."
-    cd $CATKIN_SRC/mavros_controllers
-    git pull
-    cd ../ 
-fi
-
-#Adding catkin_simple
-if [ ! -d "$CATKIN_SRC/catkin_simple" ]; then
-    echo "Cloning the catkin_simple repo ..."
-    cd $CATKIN_SRC
-    git clone https://github.com/catkin/catkin_simple
-    cd ../
-else
-    echo "catkin_simple already exists. Just pulling ..."
-    cd $CATKIN_SRC/catkin_simple
-    git pull
-    cd ../ 
-fi
-
-#Adding eigen_catkin
-if [ ! -d "$CATKIN_SRC/eigen_catkin" ]; then
-    echo "Cloning the eigen_catkin repo ..."
-    cd $CATKIN_SRC
-    git clone https://github.com/ethz-asl/eigen_catkin
-    cd ../
-else
-    echo "eigen_catkin already exists. Just pulling ..."
-    cd $CATKIN_SRC/eigen_catkin
-    git pull
-    cd ../ 
-fi
-
-#Adding eigen_catkin
-if [ ! -d "$CATKIN_SRC/mav_comm" ]; then
-    echo "Cloning the mav_comm repo ..."
-    cd $CATKIN_SRC
-    git clone https://github.com/ethz-asl/mav_comm
-    cd ../
-else
-    echo "mav_comm already exists. Just pulling ..."
-    cd $CATKIN_SRC/mav_comm
-    git pull
-    cd ../ 
-fi
-
-
-####################################### Fast-planner setup #######################################
-echo -e "\e[1;33m Adding Fast-Planner \e[0m"
-# Required for Fast-Planner
-sudo apt install ros-melodic-nlopt libarmadillo-dev -y
-
-#Adding Fast-Planner
-if [ ! -d "$CATKIN_SRC/Fast-Planner" ]; then
-    echo "Cloning the Fast-Planner repo ..."
-    cd $CATKIN_SRC
-    git clone https://github.com/mzahana/Fast-Planner.git
-    cd ../
-else
-    echo "Fast-Planner already exists. Just pulling ..."
-    cd $CATKIN_SRC/Fast-Planner
-    git pull
-    cd ../ 
-fi
-
-# Checkout ROS Mellodic branch 
-cd $CATKIN_SRC/Fast-Planner
-git checkout changes_for_ros_melodic
+# Setting up GAZEBO model paths and plugin paths
+SRC_DIR=${HOME}/Firmware
+BUILD_DIR=${SRC_DIR}/build/px4_sitl_default
+grep -xF 'export GAZEBO_PLUGIN_PATH='${BUILD_DIR}'/build_gazebo' ${HOME}/.bashrc || echo "export GAZEBO_PLUGIN_PATH=${BUILD_DIR}/build_gazebo" >> ${HOME}/.bashrc
+grep -xF 'export GAZEBO_MODEL_PATH='${SRC_DIR}'/Tools/sitl_gazebo/models' ${HOME}/.bashrc || echo "export GAZEBO_MODEL_PATH=${SRC_DIR}/Tools/sitl_gazebo/models" >> ${HOME}/.bashrc
+grep -xF 'export LD_LIBRARY_PATH='$LD_LIBRARY_PATH':'${BUILD_DIR}'/build_gazebo' ${HOME}/.bashrc || echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${BUILD_DIR}/build_gazebo" >> ${HOME}/.bashrc
+grep -xF 'export GAZEBO_PLUGIN_PATH=$GAZEBO_PLUGIN_PATH:/usr/lib/x86_64-linux-gnu/gazebo-9/plugins' ${HOME}/.bashrc || echo "export GAZEBO_PLUGIN_PATH=\$GAZEBO_PLUGIN_PATH:/usr/lib/x86_64-linux-gnu/gazebo-9/plugins" >> ${HOME}/.bashrc
+grep -xF 'export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:'${CATKIN_WS}'/src/px4_fast_planner/models' ${HOME}/.bashrc || echo "export GAZEBO_MODEL_PATH=\$GAZEBO_MODEL_PATH:$CATKIN_WS/src/px4_fast_planner/models" >> ${HOME}/.bashrc
+# Setting ROS package path 
+grep -xF 'source '${CATKIN_WS}'/devel/setup.bash' ${HOME}/.bashrc || echo "source $CATKIN_WS/devel/setup.bash" >> $HOME/.bashrc
+grep -xF 'export ROS_PACKAGE_PATH='${ROS_PACKAGE_PATH}':~/Firmware:~/Firmware/Tools/sitl_gazebo' ${HOME}/.bashrc || echo "export ROS_PACKAGE_PATH=${ROS_PACKAGE_PATH}:~/Firmware:~/Firmware/Tools/sitl_gazebo" >> ${HOME}/.bashrc
 
 ####################################### Building catkin_ws #######################################
 cd $CATKIN_WS
 catkin build multi_map_server
 catkin build
-source $CATKIN_WS/devel/setup.bash
+source ${HOME}/.bashrc

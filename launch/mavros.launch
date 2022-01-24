@@ -66,4 +66,7 @@
         <arg name="respawn_mavros" value="$(arg respawn_mavros)"/>
     </include>
 
+    <!-- Rviz -->
+    <!-- <include file="$(find px4_fast_planner)/launch/rviz.launch" /> -->
+
 </launch>

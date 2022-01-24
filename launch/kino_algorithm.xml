@@ -72,8 +72,16 @@
     <param name="sdf_map/cy" value="$(arg cy)"/>
     <param name="sdf_map/fx" value="$(arg fx)"/>
     <param name="sdf_map/fy" value="$(arg fy)"/>
+
+    <param name="sdf_map/fisheye/fx" type="double" value="318" />
+    <param name="sdf_map/fisheye/fy" type="double" value="318" />
+    <param name="sdf_map/fisheye/cx" type="double" value="720" />
+    <param name="sdf_map/fisheye/cy" type="double" value="540" />
+    <param name="sdf_map/fisheye/alpha" type="double" value="0.6" />
+    <param name="sdf_map/fisheye/xi" type="double" value="-0.2" />
+    
     <!-- depth filter -->
-    <param name="sdf_map/use_depth_filter" value="true"/>
+    <param name="sdf_map/use_depth_filter" value="false"/>
     <param name="sdf_map/depth_filter_tolerance" value="0.15"/>
     <param name="sdf_map/depth_filter_maxdist"   value="5.0"/>
     <param name="sdf_map/depth_filter_mindist"   value="0.2"/>
