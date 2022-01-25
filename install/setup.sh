@@ -14,8 +14,11 @@ else
     sleep 1
 fi
 
+# set paths
 CATKIN_WS=${HOME}/catkin_ws_fastplanner_unity
 CATKIN_SRC=${CATKIN_WS}/src
+PROJECT_NAME=e2e_navigation
+PROJECT_DIR=${CATKIN_SRC}/${PROJECT_NAME}
 
 if [ ! -d "$CATKIN_WS" ]; then
 	echo "Creating $CATKIN_WS ... "
@@ -47,14 +50,7 @@ if [ "$BUILD_PX4" != "false" ]; then
     cd ${CATKIN_SRC}/px4_fast_planner/install
     DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
-    # check requirements.txt exists (script not run in source tree)
-    REQUIREMENTS_FILE="px4_requirements.txt"
-    if [ ! -f "${DIR}/${REQUIREMENTS_FILE}" ]; then
-        echo "FAILED: ${REQUIREMENTS_FILE} needed in same directory as setup.sh (${DIR})."
-        return 1
-    fi
-
-    echo "Installing PX4 general dependencies"
+    echo -e "\e[1;33m Installing PX4 general dependencies \e[0m"
 
     sudo apt-get update -y --quiet
     sudo DEBIAN_FRONTEND=noninteractive apt-get -y --quiet --no-install-recommends install \
@@ -125,7 +121,7 @@ if [ "$BUILD_PX4" != "false" ]; then
     DONT_RUN=1 make px4_sitl gazebo
 
     # Copy PX4 SITL param file
-    cp $CATKIN_SRC/px4_fast_planner/config/10017_iris_depth_camera ${HOME}/Firmware/ROMFS/px4fmu_common/init.d-posix/
+    cp ${PROJECT_DIR}/px4_fast_planner/config/10017_iris_depth_camera ${HOME}/Firmware/ROMFS/px4fmu_common/init.d-posix/
 
     # Install MAVROS
     sudo apt install ros-melodic-mavros ros-melodic-mavros-extras -y
@@ -136,15 +132,20 @@ fi
 SRC_DIR=${HOME}/Firmware
 BUILD_DIR=${SRC_DIR}/build/px4_sitl_default
 grep -xF 'export GAZEBO_PLUGIN_PATH='${BUILD_DIR}'/build_gazebo' ${HOME}/.bashrc || echo "export GAZEBO_PLUGIN_PATH=${BUILD_DIR}/build_gazebo" >> ${HOME}/.bashrc
-grep -xF 'export GAZEBO_MODEL_PATH='${SRC_DIR}'/Tools/sitl_gazebo/models' ${HOME}/.bashrc || echo "export GAZEBO_MODEL_PATH=${SRC_DIR}/Tools/sitl_gazebo/models" >> ${HOME}/.bashrc
-grep -xF 'export LD_LIBRARY_PATH='$LD_LIBRARY_PATH':'${BUILD_DIR}'/build_gazebo' ${HOME}/.bashrc || echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${BUILD_DIR}/build_gazebo" >> ${HOME}/.bashrc
 grep -xF 'export GAZEBO_PLUGIN_PATH=$GAZEBO_PLUGIN_PATH:/usr/lib/x86_64-linux-gnu/gazebo-9/plugins' ${HOME}/.bashrc || echo "export GAZEBO_PLUGIN_PATH=\$GAZEBO_PLUGIN_PATH:/usr/lib/x86_64-linux-gnu/gazebo-9/plugins" >> ${HOME}/.bashrc
-grep -xF 'export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:'${CATKIN_WS}'/src/px4_fast_planner/models' ${HOME}/.bashrc || echo "export GAZEBO_MODEL_PATH=\$GAZEBO_MODEL_PATH:$CATKIN_WS/src/px4_fast_planner/models" >> ${HOME}/.bashrc
-# Setting ROS package path 
+grep -xF 'export GAZEBO_MODEL_PATH='${SRC_DIR}'/Tools/sitl_gazebo/models' ${HOME}/.bashrc || echo "export GAZEBO_MODEL_PATH=${SRC_DIR}/Tools/sitl_gazebo/models" >> ${HOME}/.bashrc
+grep -xF 'export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:'${PROJECT_DIR}'/px4_fast_planner/models' ${HOME}/.bashrc || echo "export GAZEBO_MODEL_PATH=\$GAZEBO_MODEL_PATH:${PROJECT_DIR}/px4_fast_planner/models" >> ${HOME}/.bashrc
+grep -xF 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:'${BUILD_DIR}'/build_gazebo' ${HOME}/.bashrc || echo "export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:${BUILD_DIR}/build_gazebo" >> ${HOME}/.bashrc
+
+# Setting ROS package path
 grep -xF 'source '${CATKIN_WS}'/devel/setup.bash' ${HOME}/.bashrc || echo "source $CATKIN_WS/devel/setup.bash" >> $HOME/.bashrc
-grep -xF 'export ROS_PACKAGE_PATH='${ROS_PACKAGE_PATH}':~/Firmware:~/Firmware/Tools/sitl_gazebo' ${HOME}/.bashrc || echo "export ROS_PACKAGE_PATH=${ROS_PACKAGE_PATH}:~/Firmware:~/Firmware/Tools/sitl_gazebo" >> ${HOME}/.bashrc
+grep -xF 'export ROS_PACKAGE_PATH='$ROS_PACKAGE_PATH':~/Firmware:~/Firmware/Tools/sitl_gazebo' ${HOME}/.bashrc || echo "export ROS_PACKAGE_PATH=\$ROS_PACKAGE_PATH:~/Firmware:~/Firmware/Tools/sitl_gazebo" >> ${HOME}/.bashrc
+
+# uncomment this if you need to install dependencies for Fast-Planner
+# sudo apt install ros-melodic-nlopt libarmadillo-dev -y
 
 ####################################### Building catkin_ws #######################################
+
 cd $CATKIN_WS
 catkin build multi_map_server
 catkin build
