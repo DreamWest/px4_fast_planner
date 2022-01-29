@@ -10,6 +10,7 @@
 
   <arg name="max_vel" default="1.0" />
   <arg name="max_acc" default="2.5" />
+  <arg name="flight_height" default="1.0"/>
 
   <!-- main algorithm params -->
   <include file="$(find px4_fast_planner)/launch/topo_algorithm.xml">
@@ -76,6 +77,7 @@
     <remap from="~goal" to="/move_base_simple/goal"/>
     <remap from="~traj_start_trigger" to="/traj_start_trigger" />
     <param name="waypoint_type" value="manual-lonely-waypoint"/>    
+    <param name="flight_height" value="$(arg flight_height)"/>
   </node>
 
 </launch>

@@ -10,22 +10,22 @@
 
     <!-- Planner configs -->
     <arg name="use_kino_planner" default="false" />
-    <arg name="map_size_x" default="40.0"/>
-    <arg name="map_size_y" default="40.0"/>
-    <arg name="map_size_z" default=" 5.0"/>
+    <arg name="map_size_x" default="100.0"/>
+    <arg name="map_size_y" default="100.0"/>
+    <arg name="map_size_z" default="5.0"/>
 
     <arg name="odom_topic" default="/mavros/local_position/odom" />
     <arg name="camera_pose_topic" default="/camera/pose"/>
     <arg name="depth_topic" default="/fed_ros/depth"/>
 
-    <arg name="max_vel" default="1.0" />
+    <arg name="max_vel" default="2.0" />
     <arg name="max_acc" default="2.5" />
 
     <!-- Initial drone's position in Gazebo -->
     <arg name="init_pos_x" default="0.0" />
     <arg name="init_pos_y" default="0.0" />
     <!-- takeoff height -->
-    <arg name="takeoff_height" default="2.0" />
+    <arg name="takeoff_height" default="1.0" />
 
     <!-- ROS static transformation -->
     <node pkg="tf" type="static_transform_publisher" name="world_map_linker" args="0 0 0 0 0 0 world map 100" />
@@ -47,9 +47,14 @@
         <arg name="map_size_y" value="$(arg map_size_y)"/>
         <arg name="map_size_z" value="$(arg map_size_z)"/>
 
+        <arg name="max_vel" value="$(arg max_vel)"/>
+        <arg name="max_acc" value="$(arg max_acc)"/>
+
         <arg name="odom_topic" value="$(arg odom_topic)" />
         <arg name="depth_topic" value="$(arg depth_topic)"/>
         <arg name="camera_pose_topic" value="$(arg camera_pose_topic)"/>
+
+        <arg name="flight_height" value="2.0"/>
     </include>
 
     <include if="$(arg use_kino_planner)" file="$(find px4_fast_planner)/launch/px4_kino_replan.launch" >
@@ -57,9 +62,14 @@
         <arg name="map_size_y" value="$(arg map_size_y)"/>
         <arg name="map_size_z" value="$(arg map_size_z)"/>
 
+        <arg name="max_vel" value="$(arg max_vel)"/>
+        <arg name="max_acc" value="$(arg max_acc)"/>
+
         <arg name="odom_topic" value="$(arg odom_topic)" />
         <arg name="depth_topic" value="$(arg depth_topic)"/>
         <arg name="camera_pose_topic" value="$(arg camera_pose_topic)"/>
+
+        <arg name="flight_height" value="2.0"/>
     </include>
 
     <!-- Geometric controller -->
@@ -68,7 +78,6 @@
         <arg name="max_acc" value="$(arg max_acc)" />
         <arg name="Kp_x" value="6.0" />
         <arg name="Kp_y" value="6.0" />
-        <!-- <arg name="Kp_z" value="10.0" /> -->
         <arg name="Kp_z" value="6.0" />
         <arg name="Kv_x" value="1.5" />
         <arg name="Kv_y" value="1.5" />
@@ -90,9 +99,9 @@
     <include file="$(find fed_ros)/launch/ds_sp_sgm_s_0.5_simu.launch">
         <arg name="offset_x" value="0" />
         <arg name="offset_y" value="0" />
-        <arg name="crop_w" value="1440" />
-        <arg name="crop_h" value="1080" />
-        <arg name="scale" value="0.2" />
+        <arg name="crop_w" value="720" />
+        <arg name="crop_h" value="540" />
+        <arg name="scale" value="0.4" />
     </include>
 
     <node pkg="px4_fast_planner" name="traj_msg_converter" type="trajectory_msg_converter.py" output="screen">
