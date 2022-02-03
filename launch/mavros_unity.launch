@@ -1,6 +1,9 @@
 <?xml version="1.0"?>
 <launch>
 
+    <arg name="use_unity_binary" default="true"/>
+    <arg name="unity_env" default="small"/>
+
     <!-- MAVROS configs -->
     <arg name="fcu_url" default="udp://:14540@localhost:14557"/>
     <arg name="respawn_mavros" default="false"/>
@@ -63,9 +66,8 @@
     <include file="$(find ros_unity)/launch/tcp_server.launch"/>
 
     <!-- unity -->
-    <arg name="use_unity_binary" default="true"/>
     <group if="$(arg use_unity_binary)">
-        <node pkg="unityrender" type="CFS.x86_64" name="unityrender"/>
+        <node pkg="unityrender" type="CFS_$(arg unity_env).x86_64" name="unityrender"/>
     </group>
 
 </launch>

@@ -4,6 +4,7 @@
     <arg name="use_unity_binary" default="true"/>
     <arg name="use_gazebo_gui" default="false"/>
     <arg name="vehicle" default="iris_depth_camera"/>
+    <arg name="unity_env" default="small"/>
 
     <!-- MAVROS configs -->
     <arg name="fcu_url" default="udp://:14540@localhost:14557"/>
@@ -18,14 +19,14 @@
     <arg name="camera_pose_topic" default="/camera/pose"/>
     <arg name="depth_topic" default="/fed_ros/depth"/>
 
-    <arg name="max_vel" default="2.0" />
+    <arg name="max_vel" default="1.0" />
     <arg name="max_acc" default="2.5" />
 
     <!-- Initial drone's position in Gazebo -->
     <arg name="init_pos_x" default="0.0" />
     <arg name="init_pos_y" default="0.0" />
     <!-- takeoff height -->
-    <arg name="takeoff_height" default="1.0" />
+    <arg name="takeoff_height" default="2.0" />
 
     <!-- ROS static transformation -->
     <node pkg="tf" type="static_transform_publisher" name="world_map_linker" args="0 0 0 0 0 0 world map 100" />
@@ -34,8 +35,9 @@
     <!-- MAVROS + PX4 + Gazebo -->
     <include file="$(find px4_fast_planner)/launch/mavros_unity.launch" >
         <arg name="use_unity_binary" value="$(arg use_unity_binary)"/>
-        <arg name="use_gazebo_gui" default="$(arg use_gazebo_gui)"/>
-        <arg name="vehicle" default="$(arg vehicle)"/>
+        <arg name="unity_env" value="$(arg unity_env)"/>
+        <arg name="use_gazebo_gui" value="$(arg use_gazebo_gui)"/>
+        <arg name="vehicle" value="$(arg vehicle)"/>
         <arg name="fcu_url" value="$(arg fcu_url)"/>
         <arg name="x" value="$(arg init_pos_x)"/>
         <arg name="y" value="$(arg init_pos_y)"/>
@@ -102,6 +104,8 @@
         <arg name="crop_w" value="720" />
         <arg name="crop_h" value="540" />
         <arg name="scale" value="0.4" />
+        <arg name="leftImage_topic" value="/fisheye_image_left"/>
+        <arg name="rightImage_topic" value="/fisheye_image_right"/>
     </include>
 
     <node pkg="px4_fast_planner" name="traj_msg_converter" type="trajectory_msg_converter.py" output="screen">
@@ -111,5 +115,10 @@
 
     <!-- Rviz -->
     <include file="$(find px4_fast_planner)/launch/rviz.launch" />
+
+    <!-- Goal type: 0 for manual setting in rviz, 1 for automatic generation in Unity -->
+    <param name="goal_set_type" type="int" value="0"/>
+    <param name="goal_radius" type="double" value="0"/>
+    <param name="goal_range" type="double" value="0"/>
 
 </launch>
