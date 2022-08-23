@@ -2,7 +2,7 @@
 <launch>
 
     <arg name="use_unity_binary" default="true"/>
-    <arg name="unity_env" default="small"/>
+    <arg name="unity_env" default="industrial_small"/>
 
     <!-- MAVROS configs -->
     <arg name="fcu_url" default="udp://:14540@localhost:14557"/>
@@ -15,6 +15,9 @@
     <arg name="R" default="0"/>
     <arg name="P" default="0"/>
     <arg name="Y" default="0"/>
+
+    <arg name="use_global_cloud"/>
+    <arg name="global_cloud_node_name"/>
 
     <!-- gazebo configs -->
     <arg name="use_gazebo_gui" default="false"/>
@@ -67,7 +70,17 @@
 
     <!-- unity -->
     <group if="$(arg use_unity_binary)">
-        <node pkg="unityrender" type="CFS_$(arg unity_env).x86_64" name="unityrender"/>
+        <node pkg="unityrender" type="$(arg unity_env).x86_64" name="unityrender">
+            <!-- <remap from="/collision" to="/planning/collision"/> -->
+        </node>
     </group>
+
+     <!-- global cloud -->
+     <group if="$(arg use_global_cloud)">
+        <node pkg="ros_unity" type="global_map_server_node" name="$(arg global_cloud_node_name)">
+            <param name="map_name" value="$(arg unity_env).ply"/>
+            <param name="map_update_freq" value="0.1"/>
+        </node>
+    </group>   
 
 </launch>

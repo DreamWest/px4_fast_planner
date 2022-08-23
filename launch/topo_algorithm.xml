@@ -2,10 +2,7 @@
   <arg name="map_size_x_"/>
   <arg name="map_size_y_"/>
   <arg name="map_size_z_"/>
-  <arg name="odometry_topic"/>
-  <arg name="camera_pose_topic"/>
-  <arg name="depth_topic"/>
-  <arg name="cloud_topic"/>
+
   <arg name="cx"/>
   <arg name="cy"/>
   <arg name="fx"/>
@@ -23,6 +20,11 @@
   <arg name="point2_y"/>
   <arg name="point2_z"/>
   <arg name="flight_type"/>
+
+  <arg name="odometry_topic" default="/sdf_map/odom" />
+  <arg name="camera_pose_topic" default="/sdf_map/pose"/>
+  <arg name="depth_topic" default="/sdf_map/depth"/>
+  <arg name="cloud_topic" default="/sdf_map/cloud"/>
 
   <!-- main node -->
   <node pkg="plan_manage" name="fast_planner_node" type="fast_planner_node" output="screen">
@@ -51,14 +53,14 @@
     <param name="fsm/waypoint2_y" value="$(arg point2_y)" type="double"/>
     <param name="fsm/waypoint2_z" value="$(arg point2_z)" type="double"/>
 
-    <param name="sdf_map/resolution"      value="0.1" /> 
+    <param name="sdf_map/resolution"      value="0.15" /> 
     <param name="sdf_map/map_size_x"   value="$(arg map_size_x_)" /> 
     <param name="sdf_map/map_size_y"   value="$(arg map_size_y_)" /> 
     <param name="sdf_map/map_size_z"   value="$(arg map_size_z_)" /> 
-    <param name="sdf_map/local_update_range_x"  value="8" /> 
-    <param name="sdf_map/local_update_range_y"  value="8" /> 
+    <param name="sdf_map/local_update_range_x"  value="10" /> 
+    <param name="sdf_map/local_update_range_y"  value="10" /> 
     <param name="sdf_map/local_update_range_z"  value="4" /> 
-    <param name="sdf_map/obstacles_inflation"   value="0.1" /> 
+    <param name="sdf_map/obstacles_inflation"   value="0.5" /> 
     <!-- <param name="sdf_map/local_update_range_x"  value="5.5" /> 
     <param name="sdf_map/local_update_range_y"  value="5.5" /> 
     <param name="sdf_map/local_update_range_z"  value="4.5" />  -->
@@ -92,11 +94,11 @@
     <param name="sdf_map/p_min"  value="0.12"/>
     <param name="sdf_map/p_max"  value="0.90"/>
     <param name="sdf_map/p_occ"  value="0.80"/>
-    <param name="sdf_map/min_ray_length" value="0.5"/>
-    <param name="sdf_map/max_ray_length" value="6"/>
+    <param name="sdf_map/min_ray_length" value="0.2"/>
+    <param name="sdf_map/max_ray_length" value="5.5"/>
 
     <param name="sdf_map/esdf_slice_height" value="0.3"/>
-    <param name="sdf_map/visualization_truncate_height"   value="2.5"/>
+    <param name="sdf_map/visualization_truncate_height"   value="4"/>
     <param name="sdf_map/virtual_ceil_height"   value="3.0"/>
     <param name="sdf_map/show_occ_time"  value="false"/>
     <param name="sdf_map/show_esdf_time" value="false"/>
@@ -141,7 +143,7 @@
     <param name="optimization/lambda6" value="10.0" type="double"/>
     <param name="optimization/lambda7" value="20.0" type="double"/>
     
-    <param name="optimization/dist0" value="0.4" type="double"/>
+    <param name="optimization/dist0" value="0.5" type="double"/>
     <param name="optimization/dist1" value="0.0" type="double"/>
     <param name="optimization/max_vel" value="$(arg max_vel)" type="double"/>
     <param name="optimization/max_acc" value="$(arg max_acc)" type="double"/>
