@@ -16,8 +16,10 @@
   <arg name="max_acc" default="2.5" />
   <arg name="flight_height" default="1.0"/>
 
+  <arg name="use_fastplanner" default="true"/>
+
   <!-- main algorithm params -->
-  <include file="$(find px4_fast_planner)/launch/kino_algorithm.xml">
+  <include if="$(arg use_fastplanner)" file="$(find px4_fast_planner)/launch/kino_algorithm.xml">
 
     <arg name="map_size_x_" value="$(arg map_size_x)"/>
     <arg name="map_size_y_" value="$(arg map_size_y)"/>
