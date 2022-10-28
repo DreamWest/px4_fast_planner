@@ -1,13 +1,13 @@
 Panels:
   - Class: rviz/Displays
-    Help Height: 133
+    Help Height: 0
     Name: Displays
     Property Tree Widget:
       Expanded:
         - /Mapping1
         - /Mapping1/simulation_map1/Autocompute Value Bounds1
       Splitter Ratio: 0.5
-    Tree Height: 221
+    Tree Height: 354
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -395,7 +395,7 @@ Visualization Manager:
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
         Max Value: 8.94999885559082
-        Min Value: -0.7499999403953552
+        Min Value: -0.24999991059303284
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -446,25 +446,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/ThirdPersonFollower
-      Distance: 100.02762603759766
+      Distance: 103.63069152832031
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -35.5982551574707
-        Y: -3.932783603668213
-        Z: 2.425557431706693e-5
+        X: -34.09510040283203
+        Y: -2.1939516067504883
+        Z: 2.909138856921345e-5
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.9347968101501465
+      Pitch: 0.9397969841957092
       Target Frame: <Fixed Frame>
       Value: ThirdPersonFollower (rviz)
-      Yaw: 3.125499725341797
+      Yaw: 3.150503635406494
     Saved:
       - Class: rviz/ThirdPersonFollower
         Distance: 17.48538589477539

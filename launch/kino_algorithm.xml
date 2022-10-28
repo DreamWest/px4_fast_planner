@@ -73,10 +73,17 @@
     <param name="sdf_map/fx" value="$(arg fx)"/>
     <param name="sdf_map/fy" value="$(arg fy)"/>
 
-    <param name="sdf_map/fisheye/fx" type="double" value="318" />
+    <!-- <param name="sdf_map/fisheye/fx" type="double" value="318" />
     <param name="sdf_map/fisheye/fy" type="double" value="318" />
     <param name="sdf_map/fisheye/cx" type="double" value="720" />
     <param name="sdf_map/fisheye/cy" type="double" value="540" />
+    <param name="sdf_map/fisheye/alpha" type="double" value="0.6" />
+    <param name="sdf_map/fisheye/xi" type="double" value="-0.2" /> -->
+
+    <param name="sdf_map/fisheye/fx" type="double" value="159" />
+    <param name="sdf_map/fisheye/fy" type="double" value="159" />
+    <param name="sdf_map/fisheye/cx" type="double" value="360" />
+    <param name="sdf_map/fisheye/cy" type="double" value="270" />
     <param name="sdf_map/fisheye/alpha" type="double" value="0.6" />
     <param name="sdf_map/fisheye/xi" type="double" value="-0.2" />
     
@@ -99,7 +106,7 @@
 
     <param name="sdf_map/esdf_slice_height" value="0.3"/>
     <param name="sdf_map/visualization_truncate_height"   value="6"/>
-    <param name="sdf_map/virtual_ceil_height"   value="2.5"/>
+    <param name="sdf_map/virtual_ceil_height"   value="6"/>
     <param name="sdf_map/show_occ_time"  value="false"/>
     <param name="sdf_map/show_esdf_time" value="false"/>
     <param name="sdf_map/pose_type"     value="1"/>  

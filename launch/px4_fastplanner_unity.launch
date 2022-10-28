@@ -3,7 +3,7 @@
     <!-- For sim -->
     <arg name="use_unity_binary" default="true"/>
     <arg name="use_gazebo_gui" default="false"/>
-    <arg name="vehicle" default="iris_depth_camera"/>
+    <arg name="vehicle" default="iris"/>
     <arg name="unity_env" default="industrial_small_2"/>
     <arg name="use_global_cloud" default="true"/>
     <arg name="global_cloud_node_name" default="global_map_server"/>
@@ -48,7 +48,6 @@
         <arg name="x" value="$(arg init_pos_x)"/>
         <arg name="y" value="$(arg init_pos_y)"/>
 
-        <arg name="use_global_cloud" default="$(arg use_global_cloud)"/>
         <arg name="global_cloud_node_name" default="$(arg global_cloud_node_name)"/>
     </include>
 
@@ -120,7 +119,7 @@
         <arg name="offset_y" value="0" />
         <arg name="crop_w" value="720" />
         <arg name="crop_h" value="540" />
-        <arg name="scale" value="1.0" />
+        <arg name="scale" value="0.5" />
         <arg name="leftImage_topic" value="/fisheye_image_left"/>
         <arg name="rightImage_topic" value="/fisheye_image_right"/>
     </include>
