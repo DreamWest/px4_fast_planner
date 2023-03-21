@@ -4,7 +4,7 @@
     <arg name="use_unity_binary" default="true"/>
     <arg name="use_gazebo_gui" default="false"/>
     <arg name="vehicle" default="iris"/>
-    <arg name="unity_env" default="industrial_small_2"/>
+    <arg name="unity_env" default="industrial_small_3"/>
     <arg name="use_global_cloud" default="true"/>
     <arg name="global_cloud_node_name" default="global_map_server"/>
 
@@ -12,31 +12,45 @@
     <arg name="fcu_url" default="udp://:14540@localhost:14557"/>
 
     <!-- Planner configs -->
-    <arg name="use_kino_planner" default="true" />
     <arg name="map_size_x" default="100.0"/>
     <arg name="map_size_y" default="100.0"/>
-    <arg name="map_size_z" default="8.0"/>
+    <arg name="map_size_z" default="6.0"/>
 
-    <arg name="odom_topic" default="/mavros/local_position/odom" />
+    <!-- Controller arguments-->
+    <arg name="use_local_frame" default="false"/>
+    <arg name="use_px4_ctrl" default="true"/>
+    <arg name="px4_ctrl_mode" default="pva"/>
+    <arg name="use_fastplanner" default="true"/>
+    <arg name="Tf" default="0.3"/>
+    <arg name="max_vel" default="3.0" />
+    <arg name="max_acc" default="6.0" />
+
+    <!-- Topic of your odometry such as VIO or LIO -->
+    <arg name="odom_topic" value="/mavros/local_position/odom" if="$(arg use_local_frame)"/>
+    <arg name="odom_topic" value="/global_nwu_odom" unless="$(arg use_local_frame)"/>
+
     <arg name="camera_pose_topic" default="/camera/pose"/>
-    <arg name="depth_topic" default="/fed_ros/depth"/>
+    <!-- <arg name="depth_topic" default="/fed_ros/depth"/> -->
+    <arg name="depth_topic" default="/fed_ros/depth_ground_truth"/>
     <arg name="global_cloud_topic" default="/$(arg global_cloud_node_name)/global_map"/>
     <arg name="local_cloud_topic" default="/pcl_render_node/cloud"/>
-
-    <arg name="max_vel" default="3.0" />
-    <arg name="max_acc" default="7.0" />
 
     <!-- Initial drone's position in Gazebo -->
     <arg name="init_pos_x" default="0.0" />
     <arg name="init_pos_y" default="0.0" />
     <!-- takeoff height -->
-    <arg name="takeoff_height" default="2.0" />
+    <arg name="takeoff_height" default="1.0" />
     <!-- flight height -->
     <arg name="flight_height" default="3.0"/>
 
+    <param name="/use_sim_time" value="true"/>
+
     <!-- ROS static transformation -->
-    <node pkg="tf" type="static_transform_publisher" name="world_map_linker" args="0 0 0 0 0 0 world map 100" />
-    <node pkg="tf" type="static_transform_publisher" name="tf_camera" args="0.1 0 0.0 -1.57 0 -1.57 base_link camera_link 33"/>
+    <node pkg="tf" type="static_transform_publisher" name="tf_baselink" args="0.0 0.0 0.0 0.0 0.0 0.0 1.0 body base_link 10"/>
+
+    <node pkg="tf" type="static_transform_publisher" name="tf_camera" args="0.45 0.1 0.0 -1.57 0 -1.57 base_link camera_link 10"/>
+
+    <node pkg="tf" type="static_transform_publisher" name="global2world" args="0.0 0.0 0.0 0.0 0.0 0.0 1.0 world global_nwu 10"/>
 
     <!-- MAVROS + PX4 + Gazebo -->
     <include file="$(find px4_fast_planner)/launch/mavros_unity.launch" >
@@ -52,7 +66,7 @@
     </include>
 
     <!-- Fast planner -->
-    <include unless="$(arg use_kino_planner)" file="$(find px4_fast_planner)/launch/px4_topo_replan.launch" >
+    <include file="$(find px4_fast_planner)/launch/px4_kino_replan.launch" >
         <arg name="map_size_x" value="$(arg map_size_x)"/>
         <arg name="map_size_y" value="$(arg map_size_y)"/>
         <arg name="map_size_z" value="$(arg map_size_z)"/>
@@ -67,43 +81,30 @@
         <arg name="use_global_cloud" default="$(arg use_global_cloud)"/>
         <arg name="global_cloud_topic" default="$(arg global_cloud_topic)"/>
         <arg name="local_cloud_topic" default="$(arg local_cloud_topic)"/>
-
+        <arg name="Tf" value="$(arg Tf)"/>
         <arg name="flight_height" value="$(arg flight_height)"/>
     </include>
 
-    <include if="$(arg use_kino_planner)" file="$(find px4_fast_planner)/launch/px4_kino_replan.launch" >
-        <arg name="map_size_x" value="$(arg map_size_x)"/>
-        <arg name="map_size_y" value="$(arg map_size_y)"/>
-        <arg name="map_size_z" value="$(arg map_size_z)"/>
+    <node pkg="odom_visualization" name="odom_visualization" type="odom_visualization" output="screen">
+            <remap from="~odom" to="$(arg odom_topic)"/>
+            <param name="color/a" value="1.0"/>    
+            <param name="color/r" value="0.0"/>        
+            <param name="color/g" value="0.0"/>        
+            <param name="color/b" value="1.0"/>       
+            <param name="covariance_scale" value="100.0"/>       
+            <param name="robot_scale" value="1.0"/>
+    </node>
 
-        <arg name="max_vel" value="$(arg max_vel)"/>
-        <arg name="max_acc" value="$(arg max_acc)"/>
-
-        <arg name="odom_topic" value="$(arg odom_topic)" />
-        <arg name="depth_topic" value="$(arg depth_topic)"/>
-        <arg name="camera_pose_topic" value="$(arg camera_pose_topic)"/>
-
-        <arg name="use_global_cloud" default="$(arg use_global_cloud)"/>
-        <arg name="global_cloud_topic" default="$(arg global_cloud_topic)"/>
-        <arg name="local_cloud_topic" default="$(arg local_cloud_topic)"/>
-
-        <arg name="flight_height" value="$(arg flight_height)"/>
+    <!-- Controller -->
+    <include file="$(find px4_offb_ctrl)/launch/offb_ctrl.launch">
+        <arg name="use_local_frame" value="$(arg use_local_frame)"/>
+        <arg name="takeoff_height" value="$(arg takeoff_height)"/>
+        <arg name="use_px4_ctrl" value="$(arg use_px4_ctrl)"/>
+        <arg name="px4_ctrl_mode" value="$(arg px4_ctrl_mode)"/>
+        <arg name="use_fastplanner" value="$(arg use_fastplanner)"/>
+        <arg name="Tf" value="$(arg Tf)"/>
     </include>
 
-    <!-- Geometric controller -->
-    <include file="$(find px4_fast_planner)/launch/geometric_controller.launch">
-        <arg name="gazebo_simulation" value="true" />
-        <arg name="max_acc" value="$(arg max_acc)" />
-        <arg name="Kp_x" value="6.0" />
-        <arg name="Kp_y" value="6.0" />
-        <arg name="Kp_z" value="6.0" />
-        <arg name="Kv_x" value="1.5" />
-        <arg name="Kv_y" value="1.5" />
-        <arg name="Kv_z" value="3.5" />
-        <arg name="init_pos_x" value="0.0" />
-        <arg name="init_pos_y" value="0.0" />
-        <arg name="init_pos_z" value="$(arg takeoff_height)" />
-    </include>
 
     <!-- Camera pose publisher -->
     <!-- This node publishes tf from parent_frame to child_frame-->
@@ -117,20 +118,23 @@
     <include file="$(find fed_ros)/launch/ds_sp_sgm_s_0.5_simu.launch">
         <arg name="offset_x" value="0" />
         <arg name="offset_y" value="0" />
-        <arg name="crop_w" value="720" />
-        <arg name="crop_h" value="540" />
-        <arg name="scale" value="0.5" />
-        <arg name="leftImage_topic" value="/fisheye_image_left"/>
-        <arg name="rightImage_topic" value="/fisheye_image_right"/>
+        <arg name="crop_w" value="360" />
+        <arg name="crop_h" value="270" />
+        <arg name="scale" value="1.0" />
+        <arg name="leftImage_topic" value="/fisheye_left"/>
+        <arg name="rightImage_topic" value="/fisheye_right"/>
     </include>
 
-    <node pkg="px4_fast_planner" name="traj_msg_converter" type="trajectory_msg_converter.py" output="screen">
+    <!-- <node pkg="px4_fast_planner" name="traj_msg_converter" type="trajectory_msg_converter.py" output="screen">
         <param name="fast_planner_traj_topic" value="planning/ref_traj"/>
         <param name="traj_pub_topic" value="command/trajectory"/>
-    </node>
+    </node> -->
 
     <!-- Rviz -->
     <include file="$(find px4_fast_planner)/launch/rviz.launch" />
+
+    <!-- depth ground truth -->
+    <node pkg="ros_unity" name="depth_GT_republisher_node" type="depth_GT_repub_node.py" output="screen"/>
 
     <!-- Goal type: 0 for manual setting in rviz, 1 for automatic generation in Unity -->
     <param name="goal_set_type" type="int" value="0"/>

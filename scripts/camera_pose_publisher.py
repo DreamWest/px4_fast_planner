@@ -10,7 +10,7 @@ from geometry_msgs.msg import PoseStamped
 if __name__ == '__main__':
     rospy.init_node('camera_pose_publisher')
 
-    parent_frame = rospy.get_param('~parent_frame', 'map')
+    parent_frame = rospy.get_param('~parent_frame', 'global_nwu')
     camera_frame = rospy.get_param('~child_frame','camera_link')
     pose_topic = rospy.get_param('~pose_topic','camera/pose')
 

@@ -60,10 +60,10 @@
     <param name="sdf_map/map_size_x"   value="$(arg map_size_x_)" /> 
     <param name="sdf_map/map_size_y"   value="$(arg map_size_y_)" /> 
     <param name="sdf_map/map_size_z"   value="$(arg map_size_z_)" /> 
-    <param name="sdf_map/local_update_range_x"  value="12" /> 
-    <param name="sdf_map/local_update_range_y"  value="12" /> 
+    <param name="sdf_map/local_update_range_x"  value="8" /> 
+    <param name="sdf_map/local_update_range_y"  value="8" /> 
     <param name="sdf_map/local_update_range_z"  value="6" /> 
-    <param name="sdf_map/obstacles_inflation"     value="0.1" /> 
+    <param name="sdf_map/obstacles_inflation"     value="0.2" /> 
     <param name="sdf_map/local_bound_inflate"    value="0.0"/>
     <param name="sdf_map/local_map_margin" value="50"/>
     <param name="sdf_map/ground_height"        value="-1.0"/>
@@ -80,10 +80,14 @@
     <param name="sdf_map/fisheye/alpha" type="double" value="0.6" />
     <param name="sdf_map/fisheye/xi" type="double" value="-0.2" /> -->
 
-    <param name="sdf_map/fisheye/fx" type="double" value="159" />
+    <!-- <param name="sdf_map/fisheye/fx" type="double" value="159" />
     <param name="sdf_map/fisheye/fy" type="double" value="159" />
     <param name="sdf_map/fisheye/cx" type="double" value="360" />
-    <param name="sdf_map/fisheye/cy" type="double" value="270" />
+    <param name="sdf_map/fisheye/cy" type="double" value="270" /> -->
+    <param name="sdf_map/fisheye/fx" type="double" value="80" />
+    <param name="sdf_map/fisheye/fy" type="double" value="80" />
+    <param name="sdf_map/fisheye/cx" type="double" value="180" />
+    <param name="sdf_map/fisheye/cy" type="double" value="135" />
     <param name="sdf_map/fisheye/alpha" type="double" value="0.6" />
     <param name="sdf_map/fisheye/xi" type="double" value="-0.2" />
     
@@ -102,11 +106,11 @@
     <param name="sdf_map/p_max"  value="0.90"/>
     <param name="sdf_map/p_occ"  value="0.80"/>
     <param name="sdf_map/min_ray_length" value="0.2"/>
-    <param name="sdf_map/max_ray_length" value="5.5"/>
+    <param name="sdf_map/max_ray_length" value="6.5"/>
 
     <param name="sdf_map/esdf_slice_height" value="0.3"/>
-    <param name="sdf_map/visualization_truncate_height"   value="6"/>
-    <param name="sdf_map/virtual_ceil_height"   value="6"/>
+    <param name="sdf_map/visualization_truncate_height"   value="5"/>
+    <param name="sdf_map/virtual_ceil_height"   value="5.1"/>
     <param name="sdf_map/show_occ_time"  value="false"/>
     <param name="sdf_map/show_esdf_time" value="false"/>
     <param name="sdf_map/pose_type"     value="1"/>  

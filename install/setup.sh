@@ -28,17 +28,15 @@ sudo apt install ros-$ROS_DISTRO-mavros ros-$ROS_DISTRO-mavros-extras -y
 SRC_DIR=${HOME}/Firmware
 BUILD_DIR=${SRC_DIR}/build/px4_sitl_default
 grep -xF 'export GAZEBO_PLUGIN_PATH='${BUILD_DIR}'/build_gazebo' ${HOME}/.bashrc || echo "export GAZEBO_PLUGIN_PATH=${BUILD_DIR}/build_gazebo" >> ${HOME}/.bashrc
-grep -xF 'export GAZEBO_PLUGIN_PATH=$GAZEBO_PLUGIN_PATH:/usr/lib/x86_64-linux-gnu/gazebo-9/plugins' ${HOME}/.bashrc || echo "export GAZEBO_PLUGIN_PATH=\$GAZEBO_PLUGIN_PATH:/usr/lib/x86_64-linux-gnu/gazebo-9/plugins" >> ${HOME}/.bashrc
 grep -xF 'export GAZEBO_MODEL_PATH='${SRC_DIR}'/Tools/sitl_gazebo/models' ${HOME}/.bashrc || echo "export GAZEBO_MODEL_PATH=${SRC_DIR}/Tools/sitl_gazebo/models" >> ${HOME}/.bashrc
-grep -xF 'export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:'${PROJECT_DIR}'/px4_fast_planner/models' ${HOME}/.bashrc || echo "export GAZEBO_MODEL_PATH=\$GAZEBO_MODEL_PATH:${PROJECT_DIR}/px4_fast_planner/models" >> ${HOME}/.bashrc
 grep -xF 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:'${BUILD_DIR}'/build_gazebo' ${HOME}/.bashrc || echo "export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:${BUILD_DIR}/build_gazebo" >> ${HOME}/.bashrc
 
 # Setting ROS package path
 grep -xF 'source '${CATKIN_WS}'/devel/setup.bash' ${HOME}/.bashrc || echo "source $CATKIN_WS/devel/setup.bash" >> $HOME/.bashrc
-grep -xF 'export ROS_PACKAGE_PATH='$ROS_PACKAGE_PATH':~/Firmware:~/Firmware/Tools/sitl_gazebo' ${HOME}/.bashrc || echo "export ROS_PACKAGE_PATH=\$ROS_PACKAGE_PATH:~/Firmware:~/Firmware/Tools/sitl_gazebo" >> ${HOME}/.bashrc
+grep -xF 'export ROS_PACKAGE_PATH='$ROS_PACKAGE_PATH':'${SRC_DIR}':'${SRC_DIR}'/Tools/sitl_gazebo' ${HOME}/.bashrc || echo "export ROS_PACKAGE_PATH=\$ROS_PACKAGE_PATH:\${SRC_DIR}:\${SRC_DIR}/Tools/sitl_gazebo" >> ${HOME}/.bashrc
 
 # uncomment this if you need to install dependencies for Fast-Planner
-# sudo apt install ros-melodic-nlopt libarmadillo-dev -y
+# sudo apt install ros-$ROS_DISTRO-nlopt libarmadillo-dev -y
 
 ####################################### Building catkin_ws #######################################
 
