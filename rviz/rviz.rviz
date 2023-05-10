@@ -182,19 +182,19 @@ Visualization Manager:
           Queue Size: 100
           Value: false
         - Class: rviz/Marker
-          Enabled: false
+          Enabled: true
           Marker Topic: /planning/travel_traj
           Name: executed_traj
           Namespaces:
             {}
           Queue Size: 100
-          Value: false
+          Value: true
         - Class: rviz/Marker
           Enabled: true
           Marker Topic: /planning/position_cmd_vis
           Name: position_cmd
           Namespaces:
-            "": true
+            {}
           Queue Size: 100
           Value: true
       Enabled: true
@@ -452,11 +452,7 @@ Visualization Manager:
           global_nwu:
             local_enu:
               body:
-                base_link:
-                  base_link_frd:
-                    {}
-                  camera_link:
-                    {}
+                {}
       Update Interval: 0
       Value: true
     - Class: rviz/Image

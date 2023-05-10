@@ -76,7 +76,6 @@
 
      <!-- global cloud -->
     <node pkg="ros_unity" type="global_map_server_node" name="$(arg global_cloud_node_name)">
-        <param name="map_name" value="$(arg unity_env).ply"/>
         <param name="map_update_freq" value="0.1"/>
     </node>
 
