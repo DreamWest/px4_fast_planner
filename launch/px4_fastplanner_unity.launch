@@ -1,7 +1,7 @@
 <launch>
 
     <!-- For sim -->
-    <arg name="use_unity_binary" default="false"/>
+    <arg name="use_unity_binary" default="true"/>
     <arg name="use_gazebo_gui" default="false"/>
     <arg name="vehicle" default="iris"/>
     <arg name="unity_env" default="hydra"/>
@@ -27,7 +27,7 @@
 
     <!-- Topic of your odometry such as VIO or LIO -->
     <arg name="odom_topic" value="/mavros/local_position/odom" if="$(arg use_local_frame)"/>
-    <arg name="odom_topic" value="/global_nwu_odom" unless="$(arg use_local_frame)"/>
+    <arg name="odom_topic" value="/drone1/global/nwu_odom" unless="$(arg use_local_frame)"/>
 
     <arg name="camera_pose_topic" default="/camera/pose"/>
     <!-- <arg name="depth_topic" default="/fed_ros/depth"/> -->
@@ -122,14 +122,9 @@
         <arg name="crop_w" value="720" />
         <arg name="crop_h" value="540" />
         <arg name="scale" value="0.5" />
-        <arg name="leftImage_topic" value="/fisheye_left"/>
-        <arg name="rightImage_topic" value="/fisheye_right"/>
+        <arg name="leftImage_topic" value="drone1/fisheye_left"/>
+        <arg name="rightImage_topic" value="drone1/fisheye_right"/>
     </include>
-
-    <!-- <node pkg="px4_fast_planner" name="traj_msg_converter" type="trajectory_msg_converter.py" output="screen">
-        <param name="fast_planner_traj_topic" value="planning/ref_traj"/>
-        <param name="traj_pub_topic" value="command/trajectory"/>
-    </node> -->
 
     <!-- Rviz -->
     <include file="$(find px4_fast_planner)/launch/rviz.launch" />
