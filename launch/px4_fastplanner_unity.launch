@@ -7,6 +7,7 @@
     <arg name="unity_env" default="hydra"/>
     <arg name="use_global_cloud" default="true"/>
     <arg name="global_cloud_node_name" default="global_map_server"/>
+    <arg name="use_future_pva_cmd" default="false"/>
 
     <!-- MAVROS configs -->
     <arg name="fcu_url" default="udp://:14540@localhost:14557"/>
@@ -103,6 +104,7 @@
         <arg name="px4_ctrl_mode" value="$(arg px4_ctrl_mode)"/>
         <arg name="use_fastplanner" value="$(arg use_fastplanner)"/>
         <arg name="odom_topic" value="$(arg odom_topic)"/>
+        <arg name="use_future_pva_cmd" default="$(arg use_future_pva_cmd)"/>
         <arg name="Tf" value="$(arg Tf)"/>
     </include>
 
